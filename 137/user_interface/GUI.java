@@ -39,6 +39,10 @@ public class GUI {
     static JPanel ball = new JPanel(null);
     static JPanel winner = new JPanel(null);
     static JPanel loser = new JPanel(null);
+    static JPanel waiting = new JPanel(null);
+    static JPanel three = new JPanel(null);
+    static JPanel two = new JPanel(null);
+    static JPanel one = new JPanel(null);
     static Client client;
     static Socket socket;
     static JTextArea chat = new JTextArea("Welcome! Please be friendly in conversing with others! :)\n");
@@ -263,6 +267,10 @@ public class GUI {
         ball.setBackground(Color.red);
         winner.setBackground(Color.green);
         loser.setBackground(Color.blue);
+        waiting.setBackground(Color.orange);
+        three.setBackground(Color.red);
+        two.setBackground(Color.yellow);
+        one.setBackground(Color.green);
         game.setVisible(true);
         game.add(tugButton);
         game.add(scroll);
@@ -271,8 +279,26 @@ public class GUI {
         game.add(ball);
         game.add(winner);
         game.add(loser);
+        game.add(waiting);
+        game.add(three);
+        game.add(two);
+        game.add(one);
+        //game.add(countdown);
 
         tugButton.setEnabled(false);
+
+        JLabel winnerLabel = new JLabel("WINNER!");
+        winnerLabel.setFont(new Font("Verdana",1,20));
+        JLabel loserLabel = new JLabel("LOSER!");
+        loserLabel.setFont(new Font("Verdana",1,20));
+        JLabel waitingLabel = new JLabel("WAITING");
+        waitingLabel.setFont(new Font("Verdana",1,20));
+        JLabel threeLabel = new JLabel("THREE");
+        threeLabel.setFont(new Font("Verdana",1,20));
+        JLabel twoLabel = new JLabel("TWO");
+        twoLabel.setFont(new Font("Verdana",1,20));
+        JLabel oneLabel = new JLabel("ONE");
+        oneLabel.setFont(new Font("Verdana",1,20));
 
         //setBounds(x, y, width, height)
         scroll.setBounds(340, 350, 400, 250);
@@ -280,11 +306,33 @@ public class GUI {
         sendBtn.setBounds(660, 610, 80, 50);
         tugButton.setBounds(500, 100, 80, 80);
         ball.setBounds(510, 240, 60, 60);
-        winner.setBounds(510, 240, 100, 100);
-        loser.setBounds(510, 240, 100, 100);
+        winner.setBounds(510, 240, 300, 100);
+        loser.setBounds(510, 240, 300, 100);
+        waiting.setBounds(480, 100, 120, 80);
+        three.setBounds(480, 100, 120, 80);
+        two.setBounds(480, 100, 120, 80);
+        one.setBounds(480, 100, 120, 80);
 
+        winner.add(winnerLabel);
+        loser.add(loserLabel);
+        waiting.add(waitingLabel);
+        three.add(threeLabel);
+        two.add(twoLabel);
+        one.add(oneLabel);
+
+        game.add(waiting);
+        game.add(three);
+        game.add(two);
+        game.add(one);
+
+        waiting.setVisible(true);
         winner.setVisible(false);
         loser.setVisible(false);
+        three.setVisible(false);
+        two.setVisible(false);
+        one.setVisible(false);
+        tugButton.setVisible(false);
+
 
         tugButton.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e) {

@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Graphics;
+import javax.swing.JLabel;
 
 class Client implements Runnable, Constants{
 	int team, clicks;
@@ -54,9 +55,23 @@ class Client implements Runnable, Constants{
 				send("CONNECT "+name+" "+team);
 			}
 			else if(connected && serverData.startsWith("STARTO")){
+				GUI.waiting.setVisible(false);
+				GUI.three.setVisible(true);
 				try{
-					Thread.sleep(3000);
+					Thread.sleep(1000);
 				}catch(Exception e){}
+				GUI.three.setVisible(false);
+				GUI.two.setVisible(true);
+				try{
+					Thread.sleep(1000);
+				}catch(Exception e){}
+				GUI.two.setVisible(false);
+				GUI.one.setVisible(true);
+				try{
+					Thread.sleep(1000);
+				}catch(Exception e){}
+				GUI.one.setVisible(false);
+				GUI.tugButton.setVisible(true);
 				GUI.tugButton.setEnabled(true);
 			}
 			else if(connected && serverData.startsWith("TUG")){
