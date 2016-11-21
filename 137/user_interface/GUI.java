@@ -49,6 +49,8 @@ public class GUI {
     static JTextArea inGameChat = new JTextArea();
     static JButton tugButton = new JButton("TUG");
     static boolean gameStart = false;
+    static JLabel score = new JLabel("0");
+    static int playerScore = 0;
     
     static JFrame frame = new JFrame("Thug of War - Main Menu");
     final static Container contentPane = frame.getContentPane();
@@ -312,6 +314,8 @@ public class GUI {
         three.setBounds(480, 100, 120, 80);
         two.setBounds(480, 100, 120, 80);
         one.setBounds(480, 100, 120, 80);
+        score.setBounds(500, 50, 20, 20);
+
 
         winner.add(winnerLabel);
         loser.add(loserLabel);
@@ -320,10 +324,18 @@ public class GUI {
         two.add(twoLabel);
         one.add(oneLabel);
 
+        winner.validate();
+        loser.validate();
+        waiting.validate();
+        three.validate();
+        two.validate();
+        one.validate();
+
         game.add(waiting);
         game.add(three);
         game.add(two);
         game.add(one);
+        game.add(score);
 
         waiting.setVisible(true);
         winner.setVisible(false);
@@ -332,11 +344,13 @@ public class GUI {
         two.setVisible(false);
         one.setVisible(false);
         tugButton.setVisible(false);
+        score.setVisible(true);
 
 
         tugButton.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e) {
                 client.send("CLICK "+client.name+" "+client.team);
+                playerScore++;
             } 
         });
 

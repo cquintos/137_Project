@@ -78,6 +78,7 @@ class Client implements Runnable, Constants{
 				int newBallLocation = Integer.parseInt(serverData.split(" ")[1].trim());
 				GUI.ball.setBounds(newBallLocation, 240, 60, 60); 
 				GUI.frame.repaint();
+				GUI.score.setText(Integer.toString(GUI.playerScore));
 			}
 			else if(connected && serverData.startsWith("FINISHED")){
 				int winner = Integer.parseInt(serverData.split(" ")[1].trim());
