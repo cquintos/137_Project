@@ -85,10 +85,20 @@ class Client implements Runnable, Constants{
 				System.out.println(winner);
 				if (team == winner){
 					GUI.winner.setVisible(true);
+					GUI.restartGameButton.setVisible(true);
+					GUI.quitGameButton.setVisible(true);
 				}
 				else
 					GUI.loser.setVisible(true);
+					GUI.restartGameButton.setVisible(true);
+					GUI.quitGameButton.setVisible(true);
 			}
+			else if(connected && serverData.startsWith("DONEGAME")){
+				GUI.returnToLobby();
+				System.exit(0);
+				connected = false;
+			}
+
 		}			
 	}
 

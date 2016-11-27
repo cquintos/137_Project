@@ -45,12 +45,18 @@ public class GUI {
     static JPanel one = new JPanel(null);
     static Client client;
     static Socket socket;
+    static String serverName;
+    static Server server;
+    static int port;
     static JTextArea chat = new JTextArea("Welcome! Please be friendly in conversing with others! :)\n");
     static JTextArea inGameChat = new JTextArea();
     static JButton tugButton = new JButton("TUG");
+    static JButton restartGameButton = new JButton("REMATCH");
+    static JButton quitGameButton = new JButton("RAGE QUIT");
     static boolean gameStart = false;
     static JLabel score = new JLabel("0");
     static int playerScore = 0;
+    static boolean isServer = false;
     
     static JFrame frame = new JFrame("Thug of War - Main Menu");
     final static Container contentPane = frame.getContentPane();
@@ -134,6 +140,95 @@ public class GUI {
         return menu;
     }
 
+    public static JPanel addStart() {
+        JPanel menu = new JPanel(null);
+        JPanel b1 = new JPanel();
+        JPanel b2 = new JPanel();
+        JLabel l1 = new JLabel("CREATE LOBBY");
+        JLabel l2 = new JLabel("JOIN LOBBY");
+        BufferedImage img = null;
+        
+        try {
+            img = ImageIO.read(new File("menu-bg.jpg"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Image dimg = img.getScaledInstance(1080, 700, Image.SCALE_SMOOTH);
+        ImageIcon imageIcon = new ImageIcon(dimg);
+        JLabel bg = new JLabel(imageIcon);
+
+        bg.setBounds(0,0, 1080, 700);
+        b1.setBounds(240, 310, 600, 80);
+        b2.setBounds(240, 410, 600, 80);
+
+        b1.add(l1);
+        b2.add(l2);
+
+        //setBounds(x, y, width, height)
+        b1.setBackground(new Color(150, 0, 0, 64));
+        b2.setBackground(new Color(0, 0, 150, 64));
+        
+        menu.add(b1);
+        menu.add(b2);
+        menu.add(bg);
+
+      
+
+        b1.addMouseListener(new MouseAdapter() { 
+            public void mouseClicked(MouseEvent e) { 
+                String playerNumber = JOptionPane.showInputDialog("Number of Players", JOptionPane.OK_CANCEL_OPTION);
+                if(playerNumber != null){
+                    server = new Server(Integer.parseInt(playerNumber));
+                    JOptionPane.showMessageDialog(frame, "Game created!");                
+                }
+                
+            }
+            public void mouseEntered(MouseEvent e) { 
+                b2.setBackground(new Color(0, 0, 150, 34));
+            }
+            public void mouseExited(MouseEvent e) { 
+                b2.setBackground(new Color(0, 0, 150, 64));
+            } 
+        });
+
+        b2.addMouseListener(new MouseAdapter() { 
+            public void mouseClicked(MouseEvent e) {
+                JTextField serverName = new JTextField();
+                JTextField portNumber = new JTextField();
+                JTextField playerName = new JTextField();
+                Object[] message = {
+                    "Player Name:", playerName,
+                    "Server:", serverName,
+                    "Port:", portNumber
+                };
+                String nameToUse = "";
+                String serverToJoin = "";
+                int portToUse = 0;
+                int confirm = JOptionPane.CANCEL_OPTION;
+                while(confirm != JOptionPane.OK_OPTION){
+                    confirm = JOptionPane.showConfirmDialog(null, message, "Server Credentials", JOptionPane.OK_CANCEL_OPTION);
+                    if (confirm == JOptionPane.OK_OPTION) {
+                        nameToUse = playerName.getText();
+                        serverToJoin = serverName.getText();
+                        portToUse = Integer.parseInt(portNumber.getText());
+                    }
+                }
+                Object[] options = {"One", "Two"};
+                int teamToJoin = JOptionPane.showOptionDialog(frame, "Team", "Team Inquiry", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]) +1;
+                joinLobby(serverToJoin, nameToUse, teamToJoin, portToUse);
+                cardLayout.show(contentPane, "Main Menu");
+            }
+            public void mouseEntered(MouseEvent e) { 
+                b1.setBackground(new Color(150, 0, 0, 34));
+            }
+            public void mouseExited(MouseEvent e) { 
+                b1.setBackground(new Color(150, 0, 0, 64));
+            } 
+        });
+        return menu;
+    }
+
     public static JPanel addGuide() {
         JPanel guide = new JPanel(null);
         JButton b1 = new JButton("BACK TO MENU");
@@ -211,6 +306,22 @@ public class GUI {
             } 
         });
 
+        newMessage.addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode() == KeyEvent.VK_ENTER){
+                    try {
+                        OutputStream outToServer = socket.getOutputStream();
+                        DataOutputStream out = new DataOutputStream(outToServer);
+                        String message = client.name + ": " + newMessage.getText() + "\n";
+                        newMessage.setText("");
+                        out.writeUTF(message);
+                    } catch (Exception f){
+                      System.out.println("Error");
+                    };
+                }
+            }
+        });
+
         //createBtn.setEnabled(false);
 
 
@@ -285,6 +396,8 @@ public class GUI {
         game.add(three);
         game.add(two);
         game.add(one);
+        game.add(restartGameButton);
+        game.add(quitGameButton);
         //game.add(countdown);
 
         tugButton.setEnabled(false);
@@ -315,6 +428,8 @@ public class GUI {
         two.setBounds(480, 100, 120, 80);
         one.setBounds(480, 100, 120, 80);
         score.setBounds(500, 50, 20, 20);
+        restartGameButton.setBounds(300, 250, 100, 80);
+        quitGameButton.setBounds(600, 250, 100, 80);
 
 
         winner.add(winnerLabel);
@@ -344,6 +459,8 @@ public class GUI {
         two.setVisible(false);
         one.setVisible(false);
         tugButton.setVisible(false);
+        restartGameButton.setVisible(false);
+        quitGameButton.setVisible(false);
         score.setVisible(true);
 
 
@@ -352,6 +469,28 @@ public class GUI {
                 client.send("CLICK "+client.name+" "+client.team);
                 playerScore++;
             } 
+        });
+
+        restartGameButton.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e) {
+                client.send("REMATCH "+client.name);
+                restartGameButton.setVisible(false);
+                quitGameButton.setVisible(false);
+                tugButton.setVisible(false);
+                waiting.setVisible(true);
+                winner.setVisible(false);
+                loser.setVisible(false);
+                playerScore = 0;
+                score.setText(Integer.toString(playerScore));
+                ball.setBounds(510, 240, 60, 60);
+            } 
+        });
+
+        quitGameButton.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                client.send("QUIT");
+                cardLayout.show(contentPane, "Start Menu");
+            }
         });
 
         backBtn.addActionListener(new ActionListener() { 
@@ -407,8 +546,8 @@ public class GUI {
         
         
         //Set up the content pane.
+        contentPane.add(addStart(), "Start Menu");
         contentPane.add(addMenu(), "Main Menu");
-
         contentPane.add(addGuide(), "Guide");                        
         contentPane.add(addWaitingRoom(), "Waiting Room");
         contentPane.add(addGame(), "Game");
@@ -422,44 +561,54 @@ public class GUI {
             public void run() {
                 chat.setEnabled(false);
                 inGameChat.setEnabled(false);
-                if (args.length != 4){
+                /*if (args.length != 4){
                     System.out.println("<server> <player name> <team 1 or 2> <port no>");
                     System.exit(1);
                 }
                 else if(Integer.parseInt(args[2]) < 1 || Integer.parseInt(args[2]) > 2){
                     System.out.println("team 1 or 2 only");
                     System.exit(1);
-                }
-                try {
-                    client = new Client(args[0],args[1], Integer.parseInt(args[2]));
-                    String serverName = args[0]; //get IP address of server from first param
-                    int port = Integer.parseInt(args[3]); //get port from second param
-                    socket = new Socket(serverName, port);
-
-                    new Thread() {
-                        public void run(){
-                            try {
-                                /* Receive data from the ServerSocket */
-                                InputStream inFromServer = socket.getInputStream();
-                                DataInputStream in = new DataInputStream(inFromServer);
-                        
-                                while(true) {
-                                    /* recieve data from the ServerSocket */
-                                    String message = in.readUTF();
-                                    chat.append(message);
-                                    inGameChat.append(message);
-                                }
-                            } catch (Exception e){
-                                System.out.println("Error");
-                            };
-                        }
-                    }.start();
-                } catch (Exception e) {
-                    System.out.println("Loser");
-                }
+                }*/
+                
                 createAndShowGUI();
 
             }
         });
+    }
+
+    public static void returnToLobby(){
+        JOptionPane.showMessageDialog(frame, "Return to first menu.");
+        cardLayout.show(contentPane, "Start Menu");
+
+    }
+
+    private static void joinLobby(String server,String name, int team, int thePort){
+        try {
+            client = new Client(server, name, team);
+            serverName = server; //get IP address of server from first param
+            port = thePort; //get port from second param
+            socket = new Socket(serverName, port);
+
+            new Thread() {
+                public void run(){
+                   try {
+                    /* Receive data from the ServerSocket */
+                    InputStream inFromServer = socket.getInputStream();
+                    DataInputStream in = new DataInputStream(inFromServer);
+                        
+                    while(true) {
+                        /* recieve data from the ServerSocket */
+                        String message = in.readUTF();
+                        chat.append(message);
+                        inGameChat.append(message);
+                    }
+                    } catch (Exception e){
+                                System.out.println("Error");
+                    };
+                }
+            }.start();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 }

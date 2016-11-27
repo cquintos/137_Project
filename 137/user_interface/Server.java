@@ -59,7 +59,7 @@ class Server implements Runnable, Constants{
 	public void run(){
 		boolean gameNotDone = true;
 		int lastBallLocation = 510;
-		while(gameNotDone){
+		while(true){
 
 			byte[] buf = new byte[256];
 			DatagramPacket packet = new DatagramPacket(buf, buf.length);
@@ -96,6 +96,7 @@ class Server implements Runnable, Constants{
 						System.out.println("Gameo Starto");
 						broadcast("STARTO");
 						stage=IN_PROGRESS;
+						game.initializeBall();
 						broadcast(game.toString());
 						break;
 					}
@@ -140,21 +141,33 @@ class Server implements Runnable, Constants{
 						broadcast("NOWINNER");
 						System.out.println("winner "+lastBallLocation);
 					}
-					gameNotDone = false;
+					stage = WAITING_GAME_RESTART;
+					System.out.println(stage);
+					roomCount = 0;
 					break;
-
+				case WAITING_GAME_RESTART:
+					if (playerData.startsWith("REMATCH")){
+						roomCount++;
+						if(roomCount == playerCount)
+							stage = GAME_START;
+					}
+					else if(playerData.startsWith("QUIT")){
+						broadcast("DONEGAME");
+						System.exit(1);
+					}
+					break;
 
 			}
 		}
 
 	}
 	
-	public static void main(String args[]){
+	/*public static void main(String args[]){
 		if (args.length != 1){
 			System.out.println("format: java Server <noofplayers>");
 			System.exit(1);
 		}
 		
 		new Server(Integer.parseInt(args[0]));
-	}
+	}*/
 }

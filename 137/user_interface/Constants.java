@@ -8,6 +8,7 @@ public interface Constants {
 	public static final int WAITING_FOR_PLAYERS=3;
 	public static final int WAITING_FOR_ROOM = 4;
 	public static final int GAME_FINISHED = 5;
+	public static final int WAITING_GAME_RESTART = 6;
 
 	public static final int PORT = 5555;
 	public static final int TIMEOUT = 100;

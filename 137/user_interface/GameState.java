@@ -9,6 +9,10 @@ class GameState{
 		this.ballLocation = 510;
 	}
 
+	public void initializeBall(){
+		this.ballLocation = 510;
+	}
+
 	public void update(String name, Player player){
 		players.put(name,player);
 	}
