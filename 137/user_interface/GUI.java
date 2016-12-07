@@ -186,9 +186,24 @@ public class GUI {
                     };
                     int confirm = JOptionPane.showConfirmDialog(null, message, "Server Creation", JOptionPane.OK_CANCEL_OPTION);
                     if(playerNumber.getText() != null && portNumber.getText() != null){
-                        server = new Server(Integer.parseInt(playerNumber.getText()), Integer.parseInt(portNumber.getText()));
-                        JOptionPane.showMessageDialog(frame, "Game created!");
-                        isServer = true;             
+                        boolean isValid = true;
+                        try{ //check if input is valid
+                          Integer.parseInt(playerNumber.getText());
+                          Integer.parseInt(portNumber.getText());
+                          isValid = true;
+                        }catch(Exception c){
+                          isValid = false;
+                          playerNumber.setBackground(Color.RED);
+                        }
+                        
+                        if(isValid == true){
+                          server = new Server(Integer.parseInt(playerNumber.getText()), Integer.parseInt(portNumber.getText()));
+                          JOptionPane.showMessageDialog(frame, "Game created!");
+                          isServer = true;  
+                        }else{
+                          JOptionPane.showMessageDialog(frame, "Invalid input!");
+                        }
+                                   
                     }
                 }
                 else
@@ -270,8 +285,8 @@ public class GUI {
         JButton backBtn = new JButton("BACK TO MENU");
 
         JButton sendBtn = new JButton("ENTER");
-        JTextField newMessage = new JTextField();
-        JScrollPane scroll = new JScrollPane();
+        final JTextField newMessage = new JTextField();
+        final JScrollPane scroll = new JScrollPane();
 
 
 
@@ -328,13 +343,12 @@ public class GUI {
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode() == KeyEvent.VK_ENTER){
                     try {
-                        String toSend = newMessage.getText();
-                        toSend.substring(0, toSend.length()-1);
+                        String toSend = client.name + ": " + newMessage.getText() + "\n";
+                        //toSend.substring(0, toSend.length()-1);
                         OutputStream outToServer = socket.getOutputStream();
                         DataOutputStream out = new DataOutputStream(outToServer);
-                        String message = client.name + ": " + toSend + "\n";
                         newMessage.setText("");
-                        out.writeUTF(message);
+                        out.writeUTF(toSend);
                     } catch (Exception f){
                       System.out.println("Error");
                     };
@@ -361,26 +375,6 @@ public class GUI {
             } 
         });
 
-        newMessage.addKeyListener(new KeyAdapter() {
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode() == KeyEvent.VK_ENTER){
-                    try {
-                        String toSend = newMessage.getText();
-                        toSend = toSend.substring(0, toSend.length()-1);
-                        OutputStream outToServer = socket.getOutputStream();
-                        DataOutputStream out = new DataOutputStream(outToServer);
-                        String message = client.name + ": " + toSend + "\n";
-                        newMessage.setText("");
-                        out.writeUTF(message);
-                    } catch (Exception f){
-                      System.out.println("Error");
-                    };
-                     JScrollBar vertical = scroll.getVerticalScrollBar();
-                    vertical.setValue( vertical.getMaximum() );
-                }
-            }
-        });
-
         backBtn.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e) { 
                 cardLayout.show(contentPane, "Main Menu");
@@ -392,12 +386,13 @@ public class GUI {
 
     public static JPanel addGame() {
         JPanel game = new JPanel(null);
+        JPanel ballContainer = new JPanel(null);
         
         JButton backBtn = new JButton("BACK TO MENU");
 
         JButton sendBtn = new JButton("ENTER");
-        JTextField newMessage = new JTextField();
-        JScrollPane scroll = new JScrollPane();
+        final JTextField newMessage = new JTextField();
+        final JScrollPane scroll = new JScrollPane();
 
         scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scroll.setViewportView(inGameChat);
@@ -410,13 +405,14 @@ public class GUI {
 
         
         ball.setBackground(Color.red);
-        winner.setBackground(Color.green);
-        loser.setBackground(Color.blue);
+        //winner.setBackground(Color.green);
+        //loser.setBackground(Color.blue);
         waiting.setBackground(Color.orange);
         three.setBackground(Color.red);
         two.setBackground(Color.yellow);
         one.setBackground(Color.green);
         game.setVisible(true);
+        game.add(backBtn);
         game.add(tugButton);
         game.add(scroll);
         game.add(sendBtn);
@@ -446,23 +442,27 @@ public class GUI {
         twoLabel.setFont(new Font("Verdana",1,20));
         JLabel oneLabel = new JLabel("ONE");
         oneLabel.setFont(new Font("Verdana",1,20));
+        JLabel safe = new JLabel("SAFE ZONE");
+        ballContainer.setBackground(Color.GREEN);
 
         //setBounds(x, y, width, height)
+        ballContainer.setBounds(415,220, 250, 100);
+        safe.setBounds(500,200,230,50);
         scroll.setBounds(340, 350, 400, 250);
         newMessage.setBounds(340, 610, 310, 50);
         sendBtn.setBounds(660, 610, 80, 50);
         tugButton.setBounds(500, 100, 80, 80);
         ball.setBounds(510, 240, 60, 60);
-        winner.setBounds(510, 240, 300, 100);
-        loser.setBounds(510, 240, 300, 100);
+        //winner.setBounds(510, 240, 300, 100);
+        //loser.setBounds(510, 240, 300, 100);
         waiting.setBounds(480, 100, 120, 80);
         three.setBounds(480, 100, 120, 80);
         two.setBounds(480, 100, 120, 80);
         one.setBounds(480, 100, 120, 80);
         score.setBounds(500, 50, 20, 20);
         restartGameButton.setBounds(300, 250, 100, 80);
-        quitGameButton.setBounds(600, 250, 100, 80);
-
+        quitGameButton.setBounds(700, 250, 100, 80);
+        backBtn.setBounds(10,10, 200, 80);
 
         winner.add(winnerLabel);
         loser.add(loserLabel);
@@ -483,6 +483,8 @@ public class GUI {
         game.add(two);
         game.add(one);
         game.add(score);
+        game.add(safe);
+        game.add(ballContainer);
 
         waiting.setVisible(true);
         winner.setVisible(false);
@@ -553,7 +555,7 @@ public class GUI {
                 if(e.getKeyCode() == KeyEvent.VK_ENTER){
                     try {
                         String toSend = newMessage.getText();
-                        toSend = toSend.substring(0, toSend.length()-1);
+                        //toSend = toSend.substring(0, toSend.length()-1);
                         OutputStream outToServer = socket.getOutputStream();
                         DataOutputStream out = new DataOutputStream(outToServer);
                         String message = client.name + ": " + toSend + "\n";
@@ -598,8 +600,11 @@ public class GUI {
         //creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                chat.setEnabled(false);
-                inGameChat.setEnabled(false);
+                chat.setEnabled(true);
+                inGameChat.setEnabled(true);
+                
+                //chat.setForeground(Color.BLACK);
+                //inGameChat.setForeground(Color.BLACK);
                 /*if (args.length != 4){
                     System.out.println("<server> <player name> <team 1 or 2> <port no>");
                     System.exit(1);
