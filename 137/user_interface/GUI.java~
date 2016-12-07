@@ -269,8 +269,8 @@ public class GUI {
         //chatPanel.setBackground(Color.WHITE);
         newWarSettings.setBackground(Color.RED);
 
-        //scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        //scroll.setViewportView(chat);
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scroll.setViewportView(chat);
 
 
         chatPanel.add(chat);
