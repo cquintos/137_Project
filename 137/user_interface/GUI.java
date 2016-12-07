@@ -269,7 +269,6 @@ public class GUI {
         JButton clearBtn = new JButton("CLEAR");
         JButton backBtn = new JButton("BACK TO MENU");
 
-<<<<<<< HEAD
         JButton sendBtn = new JButton("ENTER");
         JTextField newMessage = new JTextField();
         JScrollPane scroll = new JScrollPane();
@@ -291,15 +290,6 @@ public class GUI {
         scroll.setViewportView(chat);
 
 
-=======
-        provokeLabel.setFont(new Font("Helveltica", Font.BOLD, 50)); 
-        getProvoked.setFont(new Font("Helveltica", Font.BOLD, 40)); 
-
-        newWarSettings.setBackground(Color.RED);
-
-        chatPanel.add(chat);
-        
->>>>>>> 32faadcd6fdf043c77d4643f5ab8315a149170b1
         wRoom.setVisible(true);
         wRoom.add(provokeLabel);
         wRoom.add(getProvoked);
@@ -309,7 +299,6 @@ public class GUI {
         wRoom.add(backBtn);
         wRoom.add(chatPanel);
 
-<<<<<<< HEAD
         chatPanel.add(newMessage);
         chatPanel.add(scroll);
         chatPanel.add(sendBtn);
@@ -321,8 +310,6 @@ public class GUI {
 
         // provokeLabel.setBounds(40, 300, 460, 250);
         // getProvoked.setBounds(40, 500, 460, 250);
-=======
->>>>>>> 32faadcd6fdf043c77d4643f5ab8315a149170b1
         newWarSettings.setBounds(40, 50, 460, 250);
         createBtn.setBounds(60, 310, 200, 40);
         clearBtn.setBounds(280, 310, 200, 40);
@@ -337,7 +324,6 @@ public class GUI {
             } 
         });
 
-<<<<<<< HEAD
         newMessage.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode() == KeyEvent.VK_ENTER){
@@ -394,8 +380,6 @@ public class GUI {
                 }
             }
         });
-=======
->>>>>>> 32faadcd6fdf043c77d4643f5ab8315a149170b1
 
         backBtn.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e) { 
@@ -411,7 +395,6 @@ public class GUI {
         
         JButton backBtn = new JButton("BACK TO MENU");
 
-<<<<<<< HEAD
         JButton sendBtn = new JButton("ENTER");
         JTextField newMessage = new JTextField();
         JScrollPane scroll = new JScrollPane();
@@ -426,8 +409,6 @@ public class GUI {
 
 
         
-=======
->>>>>>> 32faadcd6fdf043c77d4643f5ab8315a149170b1
         ball.setBackground(Color.red);
         winner.setBackground(Color.green);
         loser.setBackground(Color.blue);
@@ -437,6 +418,9 @@ public class GUI {
         one.setBackground(Color.green);
         game.setVisible(true);
         game.add(tugButton);
+        game.add(scroll);
+        game.add(sendBtn);
+        game.add(newMessage);
         game.add(ball);
         game.add(winner);
         game.add(loser);
@@ -547,7 +531,6 @@ public class GUI {
             } 
         });
 
-<<<<<<< HEAD
         sendBtn.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e) { 
                 try {
@@ -587,8 +570,6 @@ public class GUI {
 
 
 
-=======
->>>>>>> 32faadcd6fdf043c77d4643f5ab8315a149170b1
         return game;
     }
 
@@ -619,6 +600,15 @@ public class GUI {
             public void run() {
                 chat.setEnabled(false);
                 inGameChat.setEnabled(false);
+                /*if (args.length != 4){
+                    System.out.println("<server> <player name> <team 1 or 2> <port no>");
+                    System.exit(1);
+                }
+                else if(Integer.parseInt(args[2]) < 1 || Integer.parseInt(args[2]) > 2){
+                    System.out.println("team 1 or 2 only");
+                    System.exit(1);
+                }*/
+                
                 createAndShowGUI();
 
             }
