@@ -12,6 +12,7 @@ public class GreetingServer extends Thread {
       //insert missing line here for binding a port to a socket
       serverSocket = new ServerSocket(port);
       serverSocket.setSoTimeout(1000000);
+      System.out.println(port);
       this.start();
    }
 

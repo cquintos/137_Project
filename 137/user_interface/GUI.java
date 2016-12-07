@@ -273,6 +273,13 @@ public class GUI {
         JTextField newMessage = new JTextField();
         JScrollPane scroll = new JScrollPane();
 
+
+
+        JScrollBar vertical = scroll.getVerticalScrollBar();
+        vertical.setValue( vertical.getMaximum() );
+
+
+
         provokeLabel.setFont(new Font("Helveltica", Font.BOLD, 50)); 
         getProvoked.setFont(new Font("Helveltica", Font.BOLD, 40)); 
 
@@ -349,6 +356,8 @@ public class GUI {
                } catch (Exception f){
                   System.out.println(f);
                };
+                JScrollBar vertical = scroll.getVerticalScrollBar();
+                vertical.setValue( vertical.getMaximum() );
             } 
         });
 
@@ -356,14 +365,18 @@ public class GUI {
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode() == KeyEvent.VK_ENTER){
                     try {
+                        String toSend = newMessage.getText();
+                        toSend = toSend.substring(0, toSend.length()-1);
                         OutputStream outToServer = socket.getOutputStream();
                         DataOutputStream out = new DataOutputStream(outToServer);
-                        String message = client.name + ": " + newMessage.getText() + "\n";
+                        String message = client.name + ": " + toSend + "\n";
                         newMessage.setText("");
                         out.writeUTF(message);
                     } catch (Exception f){
-                      System.out.println(f);
+                      System.out.println("Error");
                     };
+                     JScrollBar vertical = scroll.getVerticalScrollBar();
+                    vertical.setValue( vertical.getMaximum() );
                 }
             }
         });
@@ -388,6 +401,12 @@ public class GUI {
 
         scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scroll.setViewportView(inGameChat);
+        
+
+        JScrollBar vertical = scroll.getVerticalScrollBar();
+        vertical.setValue( vertical.getMaximum() );
+
+
 
         
         ball.setBackground(Color.red);
@@ -515,6 +534,7 @@ public class GUI {
         sendBtn.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e) { 
                 try {
+                    
                     OutputStream outToServer = socket.getOutputStream();
                     DataOutputStream out = new DataOutputStream(outToServer);
                     String message = client.name + ": " + newMessage.getText() + "\n";
@@ -523,6 +543,8 @@ public class GUI {
                } catch (Exception f){
                   System.out.println("Error");
                };
+                JScrollBar vertical = scroll.getVerticalScrollBar();
+                vertical.setValue( vertical.getMaximum() );
             } 
         });
 
@@ -530,14 +552,18 @@ public class GUI {
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode() == KeyEvent.VK_ENTER){
                     try {
+                        String toSend = newMessage.getText();
+                        toSend = toSend.substring(0, toSend.length()-1);
                         OutputStream outToServer = socket.getOutputStream();
                         DataOutputStream out = new DataOutputStream(outToServer);
-                        String message = client.name + ": " + newMessage.getText() + "\n";
+                        String message = client.name + ": " + toSend + "\n";
                         newMessage.setText("");
                         out.writeUTF(message);
                     } catch (Exception f){
                       System.out.println("Error");
                     };
+                     JScrollBar vertical = scroll.getVerticalScrollBar();
+                    vertical.setValue( vertical.getMaximum() );
                 }
             }
         });
@@ -599,9 +625,17 @@ public class GUI {
         try {
             client = new Client(server, name, team);
             serverName = server; //get IP address of server from first param
+            Thread.sleep(250);
             port = client.getServerPort();
+            Thread.sleep(250);
+            System.out.println(port);
             socket = new Socket(serverName, port);
+        }
+        catch (Exception e) {
+            System.out.println(e+"jajaf");
+        }
 
+        try{
             new Thread() {
                 public void run(){
                    try {
@@ -622,7 +656,7 @@ public class GUI {
                 }
             }.start();
         } catch (Exception e) {
-            System.out.println(e+"jajaf");
+            System.out.println(e+"jajaq");
         }
     }
 }

@@ -99,12 +99,11 @@ class Client implements Runnable, Constants{
 				System.exit(0);
 				connected = false;
 			}
-			else if(serverData.startsWith("PORTNUMBER")){
+			if(serverData.startsWith("PORTNUMBER")){
 				String tokens[] = serverData.split(" ");
 				this.chatPort = Integer.parseInt(tokens[1]);
+				//System.out.println(this.chatPort);
 			}
-
-
 		}			
 	}
 
@@ -123,6 +122,7 @@ class Client implements Runnable, Constants{
 	}
 
 	public int getServerPort(){
+		//System.out.println("hue?"+this.chatPort);
 		return this.chatPort;
 	}
 }

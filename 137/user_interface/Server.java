@@ -87,6 +87,7 @@ class Server implements Runnable, Constants{
 				roomCount++;
 				System.out.println(roomCount + "waiting for room");
 			}
+			broadcast("PORTNUMBER "+Integer.toString(this.chatPort));
 
 			switch(stage){
 				case WAITING_FOR_PLAYERS:
@@ -96,7 +97,6 @@ class Server implements Runnable, Constants{
 						System.out.println("Player connected: "+tokens[1]);
 						game.update(tokens[1].trim(),player);
 						broadcast("CONNECTED "+tokens[1]);
-						broadcast("PORTNUMBER "+Integer.toString(chatPort));
 						playerCount++;
 						if (playerCount==numPlayers){
 								stage=GAME_START;
