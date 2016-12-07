@@ -260,19 +260,10 @@ public class GUI {
         JButton clearBtn = new JButton("CLEAR");
         JButton backBtn = new JButton("BACK TO MENU");
 
-        /*JButton sendBtn = new JButton("ENTER");
-        JTextField newMessage = new JTextField();
-        JScrollPane scroll = new JScrollPane();*/
-
         provokeLabel.setFont(new Font("Helveltica", Font.BOLD, 50)); 
         getProvoked.setFont(new Font("Helveltica", Font.BOLD, 40)); 
 
-        //chatPanel.setBackground(Color.WHITE);
         newWarSettings.setBackground(Color.RED);
-
-        //scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        //scroll.setViewportView(chat);
-
 
         chatPanel.add(chat);
         
@@ -285,17 +276,6 @@ public class GUI {
         wRoom.add(backBtn);
         wRoom.add(chatPanel);
 
-        /*chatPanel.add(newMessage);
-        chatPanel.add(scroll);
-        chatPanel.add(sendBtn);
-
-        //setBounds(x, y, width, height)
-        scroll.setBounds(40, 50, 460, 250);
-        sendBtn.setBounds(410, 310, 90, 40);
-        newMessage.setBounds(40, 310, 360, 40);*/
-
-        // provokeLabel.setBounds(40, 300, 460, 250);
-        // getProvoked.setBounds(40, 500, 460, 250);
         newWarSettings.setBounds(40, 50, 460, 250);
         createBtn.setBounds(60, 310, 200, 40);
         clearBtn.setBounds(280, 310, 200, 40);
@@ -310,54 +290,6 @@ public class GUI {
             } 
         });
 
-        /*newMessage.addKeyListener(new KeyAdapter() {
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode() == KeyEvent.VK_ENTER){
-                    try {
-                        OutputStream outToServer = socket.getOutputStream();
-                        DataOutputStream out = new DataOutputStream(outToServer);
-                        String message = client.name + ": " + newMessage.getText() + "\n";
-                        newMessage.setText("");
-                        out.writeUTF(message);
-                    } catch (Exception f){
-                      System.out.println("Error");
-                    };
-                }
-            }
-        });*/
-
-        //createBtn.setEnabled(false);
-
-
-        /*sendBtn.addActionListener(new ActionListener() { 
-            public void actionPerformed(ActionEvent e) { 
-                try {
-                    OutputStream outToServer = socket.getOutputStream();
-                    DataOutputStream out = new DataOutputStream(outToServer);
-                    String message = client.name + ": " + newMessage.getText() + "\n";
-                    newMessage.setText("");
-                    out.writeUTF(message);
-               } catch (Exception f){
-                  System.out.println("Error");
-               };
-            } 
-        });*/
-
-        /*newMessage.addKeyListener(new KeyAdapter() {
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode() == KeyEvent.VK_ENTER){
-                    try {
-                        OutputStream outToServer = socket.getOutputStream();
-                        DataOutputStream out = new DataOutputStream(outToServer);
-                        String message = client.name + ": " + newMessage.getText() + "\n";
-                        newMessage.setText("");
-                        out.writeUTF(message);
-                    } catch (Exception f){
-                      System.out.println("Error");
-                    };
-                }
-            }
-        });*/
 
         backBtn.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e) { 
@@ -373,14 +305,6 @@ public class GUI {
         
         JButton backBtn = new JButton("BACK TO MENU");
 
-        JButton sendBtn = new JButton("ENTER");
-        JTextField newMessage = new JTextField();
-        JScrollPane scroll = new JScrollPane();
-
-        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scroll.setViewportView(inGameChat);
-
-        
         ball.setBackground(Color.red);
         winner.setBackground(Color.green);
         loser.setBackground(Color.blue);
@@ -390,9 +314,6 @@ public class GUI {
         one.setBackground(Color.green);
         game.setVisible(true);
         game.add(tugButton);
-        game.add(scroll);
-        game.add(sendBtn);
-        game.add(newMessage);
         game.add(ball);
         game.add(winner);
         game.add(loser);
@@ -503,38 +424,6 @@ public class GUI {
             } 
         });
 
-        sendBtn.addActionListener(new ActionListener() { 
-            public void actionPerformed(ActionEvent e) { 
-                try {
-                    OutputStream outToServer = socket.getOutputStream();
-                    DataOutputStream out = new DataOutputStream(outToServer);
-                    String message = client.name + ": " + newMessage.getText() + "\n";
-                    newMessage.setText("");
-                    out.writeUTF(message);
-               } catch (Exception f){
-                  System.out.println("Error");
-               };
-            } 
-        });
-
-        newMessage.addKeyListener(new KeyAdapter() {
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode() == KeyEvent.VK_ENTER){
-                    try {
-                        OutputStream outToServer = socket.getOutputStream();
-                        DataOutputStream out = new DataOutputStream(outToServer);
-                        String message = client.name + ": " + newMessage.getText() + "\n";
-                        newMessage.setText("");
-                        out.writeUTF(message);
-                    } catch (Exception f){
-                      System.out.println("Error");
-                    };
-                }
-            }
-        });
-
-
-
         return game;
     }
 
@@ -565,15 +454,6 @@ public class GUI {
             public void run() {
                 chat.setEnabled(false);
                 inGameChat.setEnabled(false);
-                /*if (args.length != 4){
-                    System.out.println("<server> <player name> <team 1 or 2> <port no>");
-                    System.exit(1);
-                }
-                else if(Integer.parseInt(args[2]) < 1 || Integer.parseInt(args[2]) > 2){
-                    System.out.println("team 1 or 2 only");
-                    System.exit(1);
-                }*/
-                
                 createAndShowGUI();
 
             }
