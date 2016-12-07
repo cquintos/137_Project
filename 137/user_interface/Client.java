@@ -12,6 +12,7 @@ class Client implements Runnable, Constants{
 	int team, clicks;
 	int toMove =0;
 	int start=300;
+	int chatPort=0;
 
 	String server;
 	String name;
@@ -98,6 +99,11 @@ class Client implements Runnable, Constants{
 				System.exit(0);
 				connected = false;
 			}
+			else if(serverData.startsWith("PORTNUMBER")){
+				String tokens[] = serverData.split(" ");
+				this.chatPort = Integer.parseInt(tokens[1]);
+			}
+
 
 		}			
 	}
@@ -114,5 +120,9 @@ class Client implements Runnable, Constants{
         	socket.send(packet);
         }catch(Exception e){}
 		
+	}
+
+	public int getServerPort(){
+		return this.chatPort;
 	}
 }

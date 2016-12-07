@@ -65,7 +65,7 @@ public class GreetingClient {
                      out.writeUTF(username+": " +message);
                   }*/
                } catch (Exception e){
-                  System.out.println("Error");
+                  System.out.println(e);
                };
             }
          }.start();
@@ -84,7 +84,7 @@ public class GreetingClient {
                      textArea.insert(in.readUTF(), pos);
                   }
                } catch (Exception e){
-                  System.out.println("Error");
+                  System.out.println(e);
                };
             }
          }.start();

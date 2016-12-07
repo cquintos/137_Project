@@ -36,6 +36,7 @@ import javax.swing.*;
 import java.awt.Font;
 
 public class GUI {
+    static boolean isServer = false;
     static JPanel ball = new JPanel(null);
     static JPanel winner = new JPanel(null);
     static JPanel loser = new JPanel(null);
@@ -56,7 +57,6 @@ public class GUI {
     static boolean gameStart = false;
     static JLabel score = new JLabel("0");
     static int playerScore = 0;
-    static boolean isServer = false;
     
     static JFrame frame = new JFrame("Thug of War - Main Menu");
     final static Container contentPane = frame.getContentPane();
@@ -177,12 +177,22 @@ public class GUI {
 
         b1.addMouseListener(new MouseAdapter() { 
             public void mouseClicked(MouseEvent e) { 
-                String playerNumber = JOptionPane.showInputDialog("Number of Players", JOptionPane.OK_CANCEL_OPTION);
-                if(playerNumber != null){
-                    server = new Server(Integer.parseInt(playerNumber));
-                    JOptionPane.showMessageDialog(frame, "Game created!");                
+                if(!isServer){
+                    JTextField portNumber = new JTextField();
+                    JTextField playerNumber = new JTextField();
+                    Object[] message = {
+                        "Number of Players", playerNumber,
+                        "Port:", portNumber
+                    };
+                    int confirm = JOptionPane.showConfirmDialog(null, message, "Server Creation", JOptionPane.OK_CANCEL_OPTION);
+                    if(playerNumber.getText() != null && portNumber.getText() != null){
+                        server = new Server(Integer.parseInt(playerNumber.getText()), Integer.parseInt(portNumber.getText()));
+                        JOptionPane.showMessageDialog(frame, "Game created!");
+                        isServer = true;             
+                    }
                 }
-                
+                else
+                    JOptionPane.showMessageDialog(frame, "You have a running server!");    
             }
             public void mouseEntered(MouseEvent e) { 
                 b2.setBackground(new Color(0, 0, 150, 34));
@@ -194,31 +204,31 @@ public class GUI {
 
         b2.addMouseListener(new MouseAdapter() { 
             public void mouseClicked(MouseEvent e) {
+                
                 JTextField serverName = new JTextField();
                 JTextField portNumber = new JTextField();
                 JTextField playerName = new JTextField();
                 Object[] message = {
                     "Player Name:", playerName,
                     "Server:", serverName,
-                    "Port:", portNumber
                 };
                 String nameToUse = "";
                 String serverToJoin = "";
                 int portToUse = 0;
                 int confirm = JOptionPane.CANCEL_OPTION;
                 while(confirm != JOptionPane.OK_OPTION){
-                    confirm = JOptionPane.showConfirmDialog(null, message, "Server Credentials", JOptionPane.OK_CANCEL_OPTION);
+                   confirm = JOptionPane.showConfirmDialog(null, message, "Server Credentials", JOptionPane.OK_CANCEL_OPTION);
                     if (confirm == JOptionPane.OK_OPTION) {
                         nameToUse = playerName.getText();
                         serverToJoin = serverName.getText();
-                        portToUse = Integer.parseInt(portNumber.getText());
                     }
                 }
                 Object[] options = {"One", "Two"};
                 int teamToJoin = JOptionPane.showOptionDialog(frame, "Team", "Team Inquiry", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]) +1;
-                joinLobby(serverToJoin, nameToUse, teamToJoin, portToUse);
+                joinLobby(serverToJoin, nameToUse, teamToJoin);
                 contentPane.add(addWaitingRoom(), "Waiting Room");
                 cardLayout.show(contentPane, "Main Menu");
+                
             }
             public void mouseEntered(MouseEvent e) { 
                 b1.setBackground(new Color(150, 0, 0, 34));
@@ -255,27 +265,24 @@ public class GUI {
         JPanel newWarSettings = new JPanel(null);
         JPanel wRoom = new JPanel(null);
         JPanel chatPanel = new JPanel(null);
-        JPanel chat = new Chat_UI(client.name, serverName, port);
         JButton createBtn = new JButton("CREATE WAR");
         JButton clearBtn = new JButton("CLEAR");
         JButton backBtn = new JButton("BACK TO MENU");
 
-        /*JButton sendBtn = new JButton("ENTER");
+        JButton sendBtn = new JButton("ENTER");
         JTextField newMessage = new JTextField();
-        JScrollPane scroll = new JScrollPane();*/
+        JScrollPane scroll = new JScrollPane();
 
         provokeLabel.setFont(new Font("Helveltica", Font.BOLD, 50)); 
         getProvoked.setFont(new Font("Helveltica", Font.BOLD, 40)); 
 
-        //chatPanel.setBackground(Color.WHITE);
+        chatPanel.setBackground(Color.WHITE);
         newWarSettings.setBackground(Color.RED);
 
-        //scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        //scroll.setViewportView(chat);
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scroll.setViewportView(chat);
 
 
-        chatPanel.add(chat);
-        
         wRoom.setVisible(true);
         wRoom.add(provokeLabel);
         wRoom.add(getProvoked);
@@ -285,14 +292,14 @@ public class GUI {
         wRoom.add(backBtn);
         wRoom.add(chatPanel);
 
-        /*chatPanel.add(newMessage);
+        chatPanel.add(newMessage);
         chatPanel.add(scroll);
         chatPanel.add(sendBtn);
 
         //setBounds(x, y, width, height)
         scroll.setBounds(40, 50, 460, 250);
         sendBtn.setBounds(410, 310, 90, 40);
-        newMessage.setBounds(40, 310, 360, 40);*/
+        newMessage.setBounds(40, 310, 360, 40);
 
         // provokeLabel.setBounds(40, 300, 460, 250);
         // getProvoked.setBounds(40, 500, 460, 250);
@@ -310,13 +317,15 @@ public class GUI {
             } 
         });
 
-        /*newMessage.addKeyListener(new KeyAdapter() {
+        newMessage.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode() == KeyEvent.VK_ENTER){
                     try {
+                        String toSend = newMessage.getText();
+                        toSend.substring(0, toSend.length()-1);
                         OutputStream outToServer = socket.getOutputStream();
                         DataOutputStream out = new DataOutputStream(outToServer);
-                        String message = client.name + ": " + newMessage.getText() + "\n";
+                        String message = client.name + ": " + toSend + "\n";
                         newMessage.setText("");
                         out.writeUTF(message);
                     } catch (Exception f){
@@ -324,12 +333,12 @@ public class GUI {
                     };
                 }
             }
-        });*/
+        });
 
         //createBtn.setEnabled(false);
 
 
-        /*sendBtn.addActionListener(new ActionListener() { 
+        sendBtn.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e) { 
                 try {
                     OutputStream outToServer = socket.getOutputStream();
@@ -338,12 +347,12 @@ public class GUI {
                     newMessage.setText("");
                     out.writeUTF(message);
                } catch (Exception f){
-                  System.out.println("Error");
+                  System.out.println(f);
                };
             } 
-        });*/
+        });
 
-        /*newMessage.addKeyListener(new KeyAdapter() {
+        newMessage.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode() == KeyEvent.VK_ENTER){
                     try {
@@ -353,11 +362,11 @@ public class GUI {
                         newMessage.setText("");
                         out.writeUTF(message);
                     } catch (Exception f){
-                      System.out.println("Error");
+                      System.out.println(f);
                     };
                 }
             }
-        });*/
+        });
 
         backBtn.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e) { 
@@ -586,11 +595,11 @@ public class GUI {
 
     }
 
-    private static void joinLobby(String server,String name, int team, int thePort){
+    private static void joinLobby(String server,String name, int team){
         try {
             client = new Client(server, name, team);
             serverName = server; //get IP address of server from first param
-            port = thePort; //get port from second param
+            port = client.getServerPort();
             socket = new Socket(serverName, port);
 
             new Thread() {
@@ -605,14 +614,15 @@ public class GUI {
                         String message = in.readUTF();
                         chat.append(message);
                         inGameChat.append(message);
-                    }
-                    } catch (Exception e){
-                                System.out.println("Error");
+                        }
+                    } 
+                    catch (Exception e){
+                        System.out.println(e+"jaja");
                     };
                 }
             }.start();
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e+"jajaf");
         }
     }
 }

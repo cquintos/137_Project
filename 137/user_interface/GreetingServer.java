@@ -12,12 +12,14 @@ public class GreetingServer extends Thread {
       //insert missing line here for binding a port to a socket
       serverSocket = new ServerSocket(port);
       serverSocket.setSoTimeout(1000000);
+      this.start();
    }
 
    public void run() {
       new Thread() {
          public void run() {
             boolean connected = true;
+
             while(connected) {            
                try {
                   // Start accepting data from the ServerSocket //
@@ -33,7 +35,7 @@ public class GreetingServer extends Thread {
                               DataInputStream in = new DataInputStream(client.getInputStream());
                               /* Read data from the ClientSocket */
                               String message = in.readUTF();
-                              //System.out.println(message);
+                              System.out.println(message);
                               
                               for(Socket c : clients) {
                                  DataOutputStream out = new DataOutputStream(c.getOutputStream());
@@ -43,7 +45,7 @@ public class GreetingServer extends Thread {
                               }
                            }
                         } catch (Exception e){
-                           System.out.print("Error");
+                           System.out.print(e);
                         }
                      }
                   }.start();                  
@@ -56,7 +58,9 @@ public class GreetingServer extends Thread {
                }
             }
          } 
+
       }.start();
+
    }
 
    

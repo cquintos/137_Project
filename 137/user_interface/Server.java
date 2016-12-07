@@ -8,6 +8,9 @@ class Server implements Runnable, Constants{
 
 	int playerCount=0;
 	int roomCount=0;
+	int chatPort;
+
+	Thread greetingServer;
 
 	DatagramSocket serverSocket = null;
 
@@ -19,8 +22,9 @@ class Server implements Runnable, Constants{
 
 	Thread t = new Thread(this);
 
-	public Server(int numPlayers){
+	public Server(int numPlayers, int chatPort){
 		this.numPlayers = numPlayers;
+		this.chatPort = chatPort;
 		try{
 			serverSocket = new DatagramSocket(PORT);
 			serverSocket.setSoTimeout(TIMEOUT);
@@ -28,6 +32,14 @@ class Server implements Runnable, Constants{
 			System.err.println("Port failure "+PORT);
             System.exit(-1);
 		} catch(Exception e){}
+
+		try{	
+			new GreetingServer(this.chatPort);
+		}
+		catch(Exception e){
+			System.out.println(e);
+		}
+		
 
 		game = new GameState();
 
@@ -84,6 +96,7 @@ class Server implements Runnable, Constants{
 						System.out.println("Player connected: "+tokens[1]);
 						game.update(tokens[1].trim(),player);
 						broadcast("CONNECTED "+tokens[1]);
+						broadcast("PORTNUMBER "+Integer.toString(chatPort));
 						playerCount++;
 						if (playerCount==numPlayers){
 								stage=GAME_START;
@@ -158,6 +171,7 @@ class Server implements Runnable, Constants{
 					break;
 
 			}
+
 		}
 
 	}
