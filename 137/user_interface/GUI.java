@@ -217,6 +217,7 @@ public class GUI {
                 Object[] options = {"One", "Two"};
                 int teamToJoin = JOptionPane.showOptionDialog(frame, "Team", "Team Inquiry", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]) +1;
                 joinLobby(serverToJoin, nameToUse, teamToJoin, portToUse);
+                contentPane.add(addWaitingRoom(), "Waiting Room");
                 cardLayout.show(contentPane, "Main Menu");
             }
             public void mouseEntered(MouseEvent e) { 
@@ -552,7 +553,7 @@ public class GUI {
         contentPane.add(addStart(), "Start Menu");
         contentPane.add(addMenu(), "Main Menu");
         contentPane.add(addGuide(), "Guide");                        
-        contentPane.add(addWaitingRoom(), "Waiting Room");
+        
         contentPane.add(addGame(), "Game");
         
     }
