@@ -5,8 +5,8 @@ import javax.swing.*;
 import java.awt.Color;
 import java.awt.event.*;
 
-public class ChatUI extends JPanel{
-  ChatUI(final String username, String serverName, int port){
+public class Chat_UI extends JPanel{
+  Chat_UI(final String username, String serverName, int port){
     final JTextArea textArea = new JTextArea(10,20);
     textArea.setBackground(Color.white);
     textArea.setLineWrap(true);
